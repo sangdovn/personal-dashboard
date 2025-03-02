@@ -36,6 +36,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" -p "${{ secrets.DOCKER_HUB_PASSWORD }}"
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/personal-dashboard:latest
             docker stop personal-dashboard || true
             docker rm personal-dashboard || true
