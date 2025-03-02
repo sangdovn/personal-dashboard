@@ -1,0 +1,6 @@
+services:
+  nextjs-app:
+    image: personal-dashboard
+    ports:
+      - "3000:3000"
+    restart: no
