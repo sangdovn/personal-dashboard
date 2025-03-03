@@ -16,7 +16,7 @@ export const getVideoSummaryAction = async ({
   if (!videoId) throw new Error("Please enter a valid YouTube URL");
 
   const transcriptResponse = await YoutubeTranscript.fetchTranscript(videoId, {
-    lang: lang || "en",
+    lang: lang || "vi",
   });
   if (!transcriptResponse) throw new Error("Failed to get transcript");
   const transcript = transcriptResponse.map((t) => t.text).join(" ");
@@ -34,7 +34,7 @@ export const getVideoSummaryAction = async ({
 
 export async function getYoutubeTitle(videoUrl: string) {
   const response = await fetch(
-    `https://www.youtube.com/oembed?url=${videoUrl}&format=json`
+    `https://www.youtube.com/oembed?url=${videoUrl}&format=json`,
   );
   const data = await response.json();
   return data.title;

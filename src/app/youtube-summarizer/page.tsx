@@ -5,16 +5,14 @@ import { getVideoSummaryAction, getYoutubeTitle } from "@/lib/actions/youtube";
 import { Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
-export default function YoutubeSummary() {
+export default function YouTubeSummarizer() {
   const [isSummarizing, setSummarizing] = useState(false);
-  // const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // setTitle("");
     setSummary("");
     setError("");
     setSummarizing(true);
@@ -37,7 +35,7 @@ export default function YoutubeSummary() {
       setError(
         err instanceof Error
           ? err.message
-          : "Something went wrong. Please try again."
+          : "Something went wrong. Please try again.",
       );
       console.error(err);
     } finally {
@@ -46,13 +44,10 @@ export default function YoutubeSummary() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-2xl font-bold text-center mb-4 trext-gray-800">
-        YouTube Summarizer
-      </h1>
-      <form onSubmit={handleSubmit} className="flex items-cener space-x-3">
+    <div className="mx-auto max-w-3xl rounded-lg bg-white p-6 shadow-lg">
+      <form onSubmit={handleSubmit} className="items-cener flex space-x-3">
         <input
-          className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-lg border p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           type="url"
           id="videoUrl"
           name="videoUrl"
@@ -60,22 +55,22 @@ export default function YoutubeSummary() {
         />
         <button
           type="submit"
-          className="px-5 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 items-center gap-2 transition"
+          className="items-center gap-2 rounded-lg bg-blue-500 px-5 py-3 text-white transition hover:bg-blue-600"
           disabled={isSummarizing}
         >
           {isSummarizing ? (
-            <Loader2 className="animate-spin w-5 h-5" />
+            <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
             "Summarize"
           )}
         </button>
       </form>
-      {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
+      {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
       {isSummarizing && (
-        <p className="mt-4 text-gray-600 text-center">Summarizing...</p>
+        <p className="mt-4 text-center text-gray-600">Summarizing...</p>
       )}
       {summary && (
-        <div className="mt-2 whitespace-pre-line bg-gray-100 p-4 rounded-lg text-gray-800">
+        <div className="mt-2 rounded-lg bg-gray-100 p-4 whitespace-pre-line text-gray-800">
           <ReactMarkdown>{summary}</ReactMarkdown>
         </div>
       )}
