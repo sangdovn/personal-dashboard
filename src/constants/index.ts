@@ -11,7 +11,7 @@ export const PAGE_HEADERS = new Map([
 ]);
 
 export const NAV_ITEMS = [
-  { name: "Dashboard", href: "/", Icon: Home },
-  { name: "Youtube Summarizer", href: "/youtube-summarizer", Icon: Youtube },
-  { name: "Settings", href: "/settings", Icon: Settings },
+  { name: "Dashboard", path: "/", Icon: Home },
+  { name: "Youtube Summarizer", path: "/youtube-summarizer", Icon: Youtube },
+  { name: "Settings", path: "/settings", Icon: Settings },
 ];

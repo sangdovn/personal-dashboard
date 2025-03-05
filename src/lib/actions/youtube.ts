@@ -16,7 +16,7 @@ export const getVideoSummaryAction = async ({
   if (!videoId) throw new Error("Please enter a valid YouTube URL");
 
   const transcriptResponse = await YoutubeTranscript.fetchTranscript(videoId, {
-    lang: lang || "vi",
+    lang: lang || "en",
   });
   if (!transcriptResponse) throw new Error("Failed to get transcript");
   const transcript = transcriptResponse.map((t) => t.text).join(" ");

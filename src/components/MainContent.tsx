@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import Header from "./header/Header";
+import Header from "./Header";
 import useStore from "@/lib/store";
 import clsx from "clsx";
 
@@ -16,11 +16,10 @@ export default function MainContent({ children }: Props) {
     <div
       className={clsx(
         "flex flex-1 flex-col",
-
-        {
-          "pl-64": isSidebarOpen,
-          "pl-0": !isSidebarOpen,
-        },
+        // {
+        //   "pl-64": isSidebarOpen,
+        //   "pl-0": !isSidebarOpen,
+        // },
         "transition-all duration-300 ease-in-out",
       )}
     >

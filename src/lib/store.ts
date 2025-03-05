@@ -15,7 +15,7 @@ const useStore = create<AppState>()((set) => ({
   headerTitle: "",
   theme: "",
   username: "",
-  isSidebarOpen: true,
+  isSidebarOpen: false,
   setHeaderTitle: (headerTitle: string) => set(() => ({ headerTitle })),
   setTheme: (theme: string) => set(() => ({ theme })),
   setUsername: (username: string) => set(() => ({ username })),
