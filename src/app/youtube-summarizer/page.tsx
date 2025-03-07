@@ -168,7 +168,7 @@ export default function YouTubeSummarizerPage() {
             onSubmit={handleSummarize}
             isLoading={isSummarizing}
             loadingText="Summarizing..."
-            placeholder="Paste a YouTube URL (e.g., https://youtube.com/watch?v=...)"
+            placeholder="Paste a YouTube URL..."
           />
         </div>
       </div>

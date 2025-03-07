@@ -23,11 +23,18 @@ export function extractYouTubeID(url: string): string | null {
   // - https://www.youtube.com/watch?v=VIDEO_ID
   // - https://youtu.be/VIDEO_ID
   // - https://youtube.com/shorts/VIDEO_ID
+  // - https://m.youtube.com/watch?v=VIDEO_ID
+  // - https://youtube.com/embed/VIDEO_ID
   const regex =
-    /(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([^&?\/]+)/;
+    /(?:(?:www\.|m\.)?youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([^&?\/]+)/;
   const match = url.match(regex);
 
-  return match ? match[1] : null;
+  // Validate video ID format (11 characters, alphanumeric + _ and -)
+  if (match && /^[\w-]{11}$/.test(match[1])) {
+    return match[1];
+  }
+
+  return null;
 }
 
 /**
