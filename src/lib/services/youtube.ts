@@ -81,12 +81,14 @@ export async function fetchTranscript(
         { lang },
       );
 
+      console.log("transcriptResponse", transcriptResponse);
       // Check if we got a valid transcript
       if (!transcriptResponse || transcriptResponse.length === 0) {
         throw new Error("No transcript available for this video");
       }
 
       // Process transcript
+      console.log(transcriptResponse.map((t) => t.text).join(" "));
       return transcriptResponse.map((t) => t.text).join(" ");
     } catch (error) {
       // If specified language fails and it's not English, try with English
