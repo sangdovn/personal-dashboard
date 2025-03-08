@@ -1,11 +1,10 @@
 "use server";
 
-import { getChatCompletion, OpenAIServiceError } from "@/lib/services/openai";
+import { getChatCompletion } from "@/lib/services/openai";
 import {
   extractYouTubeID,
   fetchTranscript,
   fetchVideoInfo,
-  YouTubeServiceError,
 } from "@/lib/services/youtube";
 import { ChatCompletionMessageParam } from "openai/src/resources/index.js";
 import { YOUTUBE_SUMMARIZER_SYSTEM_PROMPT } from "./constants";
@@ -33,17 +32,27 @@ export const getVideoSummaryAction = async ({
   lang = "en",
   maxLength = 15000,
 }: VideoSummaryProps) => {
+  if (!videoUrl || typeof videoUrl !== "string") {
+    return { error: "Please provide a valid YouTube URL" };
+  }
+
   try {
     // Extract video ID
     const videoId = extractYouTubeID(videoUrl);
     if (!videoId) {
-      throw new YouTubeServiceError(
-        "Could not extract a valid YouTube video ID from the URL",
-      );
+      return {
+        error: "Could not extract a valid YouTube video ID from the URL",
+      };
     }
 
     // Fetch transcript
-    const transcript = await fetchTranscript(videoId, lang);
+    let transcript;
+    try {
+      transcript = await fetchTranscript(videoId, lang);
+    } catch (error) {
+      console.error("Transcript error:", error);
+      return { error: "No transcript available for this video" };
+    }
 
     // Truncate if too long (OpenAI has token limits)
     const truncatedTranscript =
@@ -62,21 +71,21 @@ export const getVideoSummaryAction = async ({
     ];
 
     // Get streaming response
-    const stream = await getChatCompletion({ messages });
-    return stream;
+    try {
+      const stream = await getChatCompletion({ messages });
+      return { stream };
+    } catch (error) {
+      console.error("OpenAI API error:", error);
+      return { error: "Failed to generate summary. Please try again later." };
+    }
   } catch (error) {
     console.error("Error in getVideoSummaryAction:", error);
-
-    if (
-      error instanceof YouTubeServiceError ||
-      error instanceof OpenAIServiceError
-    ) {
-      throw error;
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error("Failed to process the YouTube video. Please try again.");
-    }
+    return {
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to process the YouTube video. Please try again.",
+    };
   }
 };
 

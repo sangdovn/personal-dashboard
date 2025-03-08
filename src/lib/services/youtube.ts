@@ -69,32 +69,56 @@ export async function fetchTranscript(
   videoId: string,
   lang = "en",
 ): Promise<string> {
+  if (!videoId) {
+    throw new Error("Invalid YouTube video ID");
+  }
+
   try {
-    const transcriptResponse = await YoutubeTranscript.fetchTranscript(
-      videoId,
-      {
-        lang,
-      },
-    );
-
-    if (!transcriptResponse || transcriptResponse.length === 0) {
-      throw new YouTubeServiceError(
-        "No transcript available for this video. It may not have captions.",
+    // First try with the specified language
+    try {
+      const transcriptResponse = await YoutubeTranscript.fetchTranscript(
+        videoId,
+        { lang },
       );
-    }
 
-    // Process transcript
-    return transcriptResponse.map((t) => t.text).join(" ");
+      // Check if we got a valid transcript
+      if (!transcriptResponse || transcriptResponse.length === 0) {
+        throw new Error("No transcript available for this video");
+      }
+
+      // Process transcript
+      return transcriptResponse.map((t) => t.text).join(" ");
+    } catch (error) {
+      // If specified language fails and it's not English, try with English
+      console.error("Error fetching transcript:", error);
+      if (lang !== "en") {
+        console.warn(
+          `Failed to get transcript in ${lang}, trying English instead`,
+        );
+
+        const transcriptResponse = await YoutubeTranscript.fetchTranscript(
+          videoId,
+          { lang: "en" },
+        );
+
+        // Check if we got a valid transcript
+        if (!transcriptResponse || transcriptResponse.length === 0) {
+          throw new Error("No transcript available for this video");
+        }
+
+        // Process transcript
+        return transcriptResponse.map((t) => t.text).join(" ");
+      }
+
+      // If we're already using English or the second attempt fails, throw the error
+      throw new Error("No transcript available for this video");
+    }
   } catch (error) {
-    if (error instanceof YouTubeServiceError) {
-      throw error;
-    }
+    // Log the error for debugging
+    console.error("Error fetching transcript:", error);
 
-    throw new YouTubeServiceError(
-      error instanceof Error
-        ? error.message
-        : "Failed to fetch video transcript",
-    );
+    // Always return a user-friendly error message
+    throw new Error("No transcript available for this video");
   }
 }
 

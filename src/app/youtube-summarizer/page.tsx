@@ -59,6 +59,12 @@ export default function YouTubeSummarizerPage() {
       return;
     }
 
+    // Prevent multiple submissions
+    if (isSummarizing) {
+      toast.info("Already processing a video. Please wait...");
+      return;
+    }
+
     // Init state
     setSummarizing(true);
 
@@ -85,8 +91,31 @@ export default function YouTubeSummarizerPage() {
     ]);
 
     try {
-      // Get stream from server action
-      const stream = await getVideoSummaryAction({ videoUrl: url });
+      // Get response from server action
+      const response = await getVideoSummaryAction({ videoUrl: url });
+
+      // Check if there's an error
+      if ("error" in response) {
+        // Handle error from server
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === tempAssistantId
+              ? {
+                  ...msg,
+                  id: Date.now(),
+                  content: `Error: ${response.error}`,
+                }
+              : msg,
+          ),
+        );
+
+        toast.error(response.error);
+        setSummarizing(false);
+        return;
+      }
+
+      // If we get here, we have a stream
+      const stream = response.stream;
 
       // Update temporary message to show we're now summarizing
       setMessages((prev) =>
@@ -99,15 +128,35 @@ export default function YouTubeSummarizerPage() {
 
       // Process stream chunks
       let fullContent = "";
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content || "";
-        fullContent += content;
+      try {
+        for await (const chunk of stream) {
+          const content = chunk.choices[0]?.delta?.content || "";
+          fullContent += content;
+
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === tempAssistantId
+                ? { ...msg, content: fullContent }
+                : msg,
+            ),
+          );
+        }
+      } catch (streamError) {
+        console.error("Error processing stream:", streamError);
+        if (fullContent) {
+          // If we have partial content, keep it and add an error note
+          fullContent += "\n\n⚠️ The summary was cut off due to an error.";
+        } else {
+          fullContent = "Error: Failed to generate summary. Please try again.";
+        }
 
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === tempAssistantId ? { ...msg, content: fullContent } : msg,
           ),
         );
+
+        toast.error("Error while generating summary");
       }
 
       // Update temporary message with final ID
@@ -117,27 +166,27 @@ export default function YouTubeSummarizerPage() {
         ),
       );
 
-      toast.success("Summary generated successfully!");
+      if (fullContent && !fullContent.includes("Error:")) {
+        toast.success("Summary generated successfully!");
+      }
     } catch (error) {
-      console.error(error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to summarize the video. Please try again.";
+      // This catch will only be triggered for unexpected errors
+      console.error("Unexpected error:", error);
 
+      // Show a generic error message
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === tempAssistantId
             ? {
                 ...msg,
                 id: Date.now(),
-                content: `Error: ${errorMessage}`,
+                content: "Error: Something went wrong. Please try again later.",
               }
             : msg,
         ),
       );
 
-      toast.error(errorMessage);
+      toast.error("An unexpected error occurred");
     } finally {
       setSummarizing(false);
     }
