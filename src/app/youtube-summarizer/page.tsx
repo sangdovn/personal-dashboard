@@ -146,7 +146,7 @@ export default function YouTubeSummarizerPage() {
   return (
     <div className="relative flex h-full grow flex-col">
       {/* Header - Added pl-10 to prevent overlap with CustomTrigger */}
-      <div className="sticky top-0 z-10 flex items-center justify-center border-b border-gray-200 bg-white/90 p-2 shadow-sm backdrop-blur-md">
+      <div className="sticky top-0 z-10 flex items-center justify-center bg-white/90 p-2 backdrop-blur-md">
         <div className="flex max-w-3xl items-center gap-2">
           <YoutubeIcon className="size-9 text-red-600" />
           <h1 className="text-xl font-semibold">YouTube Video Summarizer</h1>
@@ -162,7 +162,7 @@ export default function YouTubeSummarizerPage() {
       </div>
 
       {/* Input area */}
-      <div className="sticky bottom-0 border-t border-gray-200 bg-white/90 p-4 backdrop-blur-md">
+      <div className="sticky bottom-0 border-gray-200 bg-white/90 p-4 backdrop-blur-md">
         <div className="mx-auto max-w-3xl">
           <ChatInput
             onSubmit={handleSummarize}
