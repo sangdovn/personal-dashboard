@@ -11,6 +11,6 @@ export const NAV_ITEMS = {
   ],
   Help: [
     { name: "Support", path: "/support", icon: HelpCircle },
-    { name: "Feedback", path: "/Feedback", icon: Send },
+    { name: "Feedback", path: "/feedback", icon: Send },
   ],
 };
