@@ -1,0 +1,27 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into server and deploy
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.APP_NAME }}:latest
+            docker stop ${{ vars.APP_NAME }} || true
+            docker rm ${{ vars.APP_NAME }} || true
+            docker rmi $(docker images -f "dangling=true" -q) || true
+            docker system prune -af
+            docker run -d --restart unless-stopped --name ${{ vars.APP_NAME }} -p 3000:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.APP_NAME }}:latest

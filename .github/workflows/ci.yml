@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: |
+          npm run lint
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ vars.APP_NAME }} .
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Tag and Push Docker image
+        run: |
+          docker tag ${{ vars.APP_NAME }} ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.APP_NAME }}:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.APP_NAME }}:latest
+
+      - name: Cleanup Docker
+        run: |
+          docker rmi $(docker images -f "dangling=true" -q) || true
+          docker system prune -af
