@@ -37,6 +37,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+            echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/personal-dashboard:latest
             docker stop personal-dashboard || true
             docker rm personal-dashboard || true

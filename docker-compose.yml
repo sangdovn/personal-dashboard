@@ -1,6 +1,12 @@
 services:
-  nextjs-app:
-    image: personal-dashboard
+  personal-dashboard:
+    image: ${DOCKER_HUB_USERNAME}/personal-dashboard:latest
+    container_name: personal-dashboard
+    restart: always
     ports:
       - "3000:3000"
-    restart: no
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    # Add any volumes or other configurations as needed
+    # volumes:
+    #   - ./data:/app/data
