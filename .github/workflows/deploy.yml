@@ -66,4 +66,4 @@ jobs:
             docker rm ${{ vars.APP_NAME }} || true
             docker rmi $(docker images -f "dangling=true" -q) || true
             docker system prune -af
-            docker run -d --restart unless-stopped --name ${{ vars.APP_NAME }} -p 3000:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.APP_NAME }}:latest
+            docker run -d --restart unless-stopped --name ${{ vars.APP_NAME }} -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} -p 3000:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.APP_NAME }}:latest
