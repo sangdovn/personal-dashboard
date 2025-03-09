@@ -4,7 +4,7 @@ import useStore from "@/lib/store";
 import clsx from "clsx";
 import Link from "next/link";
 import { Bell, Moon } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function Header() {
   const { isSidebarOpen } = useStore((state) => state);
