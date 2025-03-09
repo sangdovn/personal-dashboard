@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import Providers from "./providers";
+import "@/styles/globals.css";
+import { Providers, AppSidebar, CustomSidebarTrigger } from "@/components";
 import { ReactNode } from "react";
-import { AppSidebar } from "@/components/AppSidebar";
-import CustomTrigger from "@/components/ui/CustomSidebarTrigger";
 
 interface Props {
   children: ReactNode;
@@ -21,7 +19,7 @@ export default function RootLayout({ children }: Props) {
         <Providers>
           <AppSidebar />
           <main className="relative flex h-dvh w-full min-w-0 flex-col overflow-hidden">
-            <CustomTrigger className="absolute top-2 left-2" />
+            <CustomSidebarTrigger className="absolute top-2 left-2" />
             {children}
           </main>
         </Providers>

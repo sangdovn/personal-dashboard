@@ -1,14 +1,11 @@
 "use server";
 
 import { getChatCompletion } from "@/lib/services/openai";
-import {
-  extractYouTubeID,
-  fetchTranscript,
-  fetchVideoInfo,
-} from "@/lib/services/youtube";
+import { fetchTranscript, fetchVideoInfo } from "@/lib/services/youtube";
 import { ChatCompletionMessageParam } from "openai/src/resources/index.js";
-import { YOUTUBE_SUMMARIZER_SYSTEM_PROMPT } from "./constants";
+import { YOUTUBE_SUMMARIZER_SYSTEM_PROMPT } from "@/lib/constants";
 import { VideoInfo } from "@/lib/types";
+import { extractYouTubeID } from "@/lib/utils/youtube";
 
 /**
  * Props for the video summary action

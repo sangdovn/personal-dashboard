@@ -4,7 +4,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { ChildProps } from "@/lib/types";
 import clsx from "clsx";
 
-export default function CustomTrigger({ className }: ChildProps) {
+export default function CustomSidebarTrigger({ className }: ChildProps) {
   const { toggleSidebar, openMobile, open } = useSidebar();
 
   const spanClasses =

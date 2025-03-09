@@ -1,4 +1,4 @@
-import ChatMessageItem from "@/components/ChatMessageItem";
+import ChatMessageItem from "@/components/chat/ChatMessageItem";
 import { ChatMessage } from "@/lib/types";
 
 type Props = {

@@ -20,14 +20,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { NAV_ITEMS } from "@/lib/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import CustomTrigger from "./ui/CustomSidebarTrigger";
-import { Button } from "./ui/button";
+import CustomSidebarTrigger from "@/components/layout/CustomSidebarTrigger";
+import { Button } from "@/components/ui/button";
 
-export function AppSidebar() {
+export default function AppSidebar() {
   const pathname = usePathname();
   const { isMobile, toggleSidebar } = useSidebar();
 
@@ -49,7 +49,7 @@ export function AppSidebar() {
               <h1 className="text-2xl">Logo</h1>
             </Link>
           </Button>
-          {isMobile && <CustomTrigger />}
+          {isMobile && <CustomSidebarTrigger />}
         </div>
       </SidebarHeader>
       <SidebarSeparator />

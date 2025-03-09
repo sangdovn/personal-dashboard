@@ -1,11 +1,10 @@
 "use client";
 
-import ChatInput from "@/components/ChatInput";
-import ChatMessages from "@/components/ChatMessages";
+import { ChatInput, ChatMessages } from "@/components";
 import { ChatMessage } from "@/lib/types";
 import { useState, useEffect, useRef } from "react";
-import { getVideoSummaryAction } from "./actions";
-import { isValidYouTubeUrl } from "@/lib/services/youtube";
+import { getVideoSummaryAction } from "@/lib/server/actions/youtube";
+import { isValidYouTubeUrl } from "@/lib/utils/youtube";
 import { toast } from "sonner";
 import { YoutubeIcon } from "lucide-react";
 
